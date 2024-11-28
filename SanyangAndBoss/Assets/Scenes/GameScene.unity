@@ -93,7 +93,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000000, guid: 0b1f3fbab4c3d054e9328b4a7c73cbf6, type: 2}
+  m_LightingDataAsset: {fileID: 112000000, guid: b3b0c48c8cfc1314bbb2d2a66f075955, type: 2}
   m_LightingSettings: {fileID: 4890085278179872738, guid: ed8854d2d663c1848930e28947660f5a, type: 2}
 --- !u!196 &4
 NavMeshSettings:
@@ -7427,8 +7427,8 @@ GameObject:
   - component: {fileID: 499276601892018825}
   - component: {fileID: 554095491790730193}
   - component: {fileID: 554095491790730196}
-  - component: {fileID: 554095491790730195}
   - component: {fileID: 554095491790730194}
+  - component: {fileID: 554095491790730197}
   m_Layer: 0
   m_Name: Slime
   m_TagString: Untagged
@@ -7882,19 +7882,6 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &554095491790730195
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 496931384563261389}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 772f4bd9d9e1ea5448e2ca92f7ce613c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lostDistance: 0
 --- !u!135 &554095491790730196
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -7916,6 +7903,19 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 3
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &554095491790730197
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 496931384563261389}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e2d97be176e22f49a96ddd982095afb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lostDistance: 0
 --- !u!1001 &2642282495041776869
 PrefabInstance:
   m_ObjectHideFlags: 0
