@@ -9,7 +9,8 @@ public class Monster : MonoBehaviour
     NavMeshAgent nmAgent;
     Animator anim;
 
-    float HP = 0;
+    [SerializeField] private float maxHP = 10; // 최대 체력
+    private float currentHP; // 현재 체력
     public float lostDistance;
 
     enum State
@@ -28,17 +29,20 @@ public class Monster : MonoBehaviour
         anim = GetComponent<Animator>();
         nmAgent = GetComponent<NavMeshAgent>();
 
-        HP = 10;
+        currentHP = maxHP;
         state = State.IDLE;
         StartCoroutine(StateMachine());
     }
 
     IEnumerator StateMachine()
     {
-        while (HP > 0)
+        while (currentHP > 0)
         {
             yield return StartCoroutine(state.ToString());
         }
+        // 체력이 0이 되었을 때 사망 상태로 전환
+        ChangeState(State.KILLED);
+        StartCoroutine(KILLED());
     }
 
     IEnumerator IDLE()
@@ -121,7 +125,14 @@ public class Monster : MonoBehaviour
 
     IEnumerator KILLED()
     {
-        yield return null;
+        // 사망 애니메이션 재생
+        anim.Play("Die", 0, 0);
+
+        // 사망 애니메이션이 끝날 때까지 대기
+        yield return new WaitForSeconds(anim.GetCurrentAnimatorStateInfo(0).length);
+
+        // 오브젝트 제거
+        Destroy(gameObject);
     }
 
     void ChangeState(State newState)
@@ -131,13 +142,35 @@ public class Monster : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.name != "Player") return;
-        // Sphere Collider 가 Player 를 감지하면      
-        target = other.transform;
-        // NavMeshAgent의 목표를 Player 로 설정
-        nmAgent.SetDestination(target.position);
-        // StateMachine을 추적으로 변경
-        ChangeState(State.CHASE);
+        if (other.CompareTag("Player"))
+        {
+            target = other.transform;
+            nmAgent.SetDestination(target.position);
+            ChangeState(State.CHASE);
+        }
+
+        else if (other.CompareTag("Weapon"))
+        {
+            WeaponController weapon = other.GetComponent<WeaponController>();
+            if (weapon != null)
+            {
+                TakeDamage(weapon.damage); // 무기의 공격력을 가져와 데미지 적용
+            }
+        }
+    }
+
+    public void TakeDamage(float damage)
+    {
+        if (state == State.KILLED) return;
+
+        currentHP -= damage;
+        Debug.Log($"몬스터 체력: {currentHP}/{maxHP}");
+
+        if (currentHP <= 0)
+        {
+            currentHP = 0;
+            ChangeState(State.KILLED);
+        }
     }
 
     // Update is called once per frame
