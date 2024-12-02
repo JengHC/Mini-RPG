@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class Monster : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class Monster : MonoBehaviour
 
     [SerializeField] private float maxHP = 10; // 최대 체력
     private float currentHP; // 현재 체력
+    public GameObject hpBar;
     public float lostDistance;
 
     enum State
@@ -32,6 +34,8 @@ public class Monster : MonoBehaviour
         currentHP = maxHP;
         state = State.IDLE;
         StartCoroutine(StateMachine());
+
+        UpdateHPBar();
     }
 
     IEnumerator StateMachine()
@@ -166,10 +170,25 @@ public class Monster : MonoBehaviour
         currentHP -= damage;
         Debug.Log($"몬스터 체력: {currentHP}/{maxHP}");
 
+        // HP 바 업데이트
+        UpdateHPBar();
+
         if (currentHP <= 0)
         {
             currentHP = 0;
             ChangeState(State.KILLED);
+        }
+    }
+
+    void UpdateHPBar()
+    {
+        if (hpBar != null)
+        {
+            Slider slider = hpBar.GetComponent<Slider>();
+            if (slider != null)
+            {
+                slider.value = currentHP / maxHP; // HP 비율 설정
+            }
         }
     }
 
