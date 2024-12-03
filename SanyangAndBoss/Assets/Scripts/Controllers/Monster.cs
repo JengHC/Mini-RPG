@@ -111,9 +111,20 @@ public class Monster : MonoBehaviour
     {
         var curAnimStateInfo = anim.GetCurrentAnimatorStateInfo(0);
 
-        // 공격 애니메이션은 공격 후 Idle Battle 로 이동하기 때문에 
-        // 코드가 이 지점에 오면 무조건 Attack01 을 Play
+        // 공격 애니메이션 실행
         anim.Play("Attack01", 0, 0);
+
+        // 플레이어에게 데미지를 줌
+        if (target != null && target.CompareTag("Player"))
+        {
+            PlayerController player = target.GetComponent<PlayerController>();
+            if (player != null)
+            {
+                float damage = 5.0f; // 몬스터의 공격 데미지
+                player.TakeDamage(damage);
+                Debug.Log($"플레이어에게 {damage} 데미지를 줌");
+            }
+        }
 
         // 거리가 멀어지면
         if (nmAgent.remainingDistance > nmAgent.stoppingDistance)
@@ -122,9 +133,10 @@ public class Monster : MonoBehaviour
             ChangeState(State.CHASE);
         }
         else
-            // 공격 animation 의 두 배만큼 대기
-            // 이 대기 시간을 이용해 공격 간격을 조절할 수 있음.
+        {
+            // 공격 애니메이션의 두 배 길이만큼 대기
             yield return new WaitForSeconds(curAnimStateInfo.length * 2f);
+        }
     }
 
     IEnumerator KILLED()

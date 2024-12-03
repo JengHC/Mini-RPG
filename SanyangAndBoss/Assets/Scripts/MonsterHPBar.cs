@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class HPBar : MonoBehaviour
+public class MonsterHPBar : MonoBehaviour
 {
     [SerializeField] GameObject goPrefabs = null;
     List<Transform> objectList = new List<Transform>();

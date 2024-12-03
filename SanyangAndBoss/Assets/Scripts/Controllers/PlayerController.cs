@@ -1,17 +1,33 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
     [SerializeField]
     float _speed = 10.0f;
 
+    [SerializeField]
+    float maxHP = 100.0f; // 최대 HP
+    float currentHP;
+
+    [SerializeField]
+    PlayerHPBar hpBar; // PlayerHPBar를 연결
+
     Vector3 _destPos;
     private bool isAttacking = false; // 공격 중인지 확인하는 플래그
 
     void Start()
     {
+        currentHP = maxHP; // 초기 HP 설정
+
+        // HPBar 초기화
+        if (hpBar != null)
+        {
+            hpBar.SetMaxHP(maxHP);
+        }
+
         Managers.Input.MouseAction -= OnMouseClicked;
         Managers.Input.MouseAction += OnMouseClicked;
     }
@@ -72,17 +88,6 @@ public class PlayerController : MonoBehaviour
         }
 
         StartCoroutine(ResetAttack());
-
-        //if (isAttacking) return; // 이미 공격 중이면 실행하지 않음
-
-        //Animator anim = GetComponent<Animator>();
-        //anim.SetTrigger("Attack");
-        //isAttacking = true; // 공격 중으로 설정
-
-        //// 일정 시간 뒤 공격 종료 (애니메이션 길이 이후)
-        //StartCoroutine(ResetAttack());
-
-
     }
 
     IEnumerator ResetAttack()
@@ -118,6 +123,28 @@ public class PlayerController : MonoBehaviour
         {
             _state = PlayerState.Attack;
             Debug.Log("Q 키 입력: 공격 상태로 전환");
+        }
+    }
+
+    // 플레이어가 피해를 입었을 때 호출
+    public void TakeDamage(float damage)
+    {
+        if (_state == PlayerState.Die) return;
+
+        currentHP -= damage;
+        Debug.Log($"플레이어 체력: {currentHP}/{maxHP}");
+
+        if (currentHP <= 0)
+        {
+            currentHP = 0;
+            _state = PlayerState.Die;
+            Debug.Log("플레이어가 죽었습니다!");
+        }
+
+        // PlayerHPBar 업데이트
+        if (hpBar != null)
+        {
+            hpBar.UpdateHP(currentHP);
         }
     }
 
