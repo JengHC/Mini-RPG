@@ -25,7 +25,6 @@ public class Monster : MonoBehaviour
 
     State state;
 
-    // Start is called before the first frame update
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -33,43 +32,41 @@ public class Monster : MonoBehaviour
 
         currentHP = maxHP;
         state = State.IDLE;
-        StartCoroutine(StateMachine());
 
-        UpdateHPBar();
+        if (hpBar != null)
+        {
+            Slider slider = hpBar.GetComponent<Slider>();
+            if (slider != null)
+                slider.value = 1; // 체력 비율 초기화
+        }
+
+        StartCoroutine(StateMachine());
     }
 
     IEnumerator StateMachine()
     {
-        while (currentHP > 0)
+        while (state != State.KILLED)
         {
             yield return StartCoroutine(state.ToString());
         }
-        // 체력이 0이 되었을 때 사망 상태로 전환
-        ChangeState(State.KILLED);
+
         StartCoroutine(KILLED());
     }
 
     IEnumerator IDLE()
     {
-        // 현재 animator 상태정보 얻기
         var curAnimStateInfo = anim.GetCurrentAnimatorStateInfo(0);
-
-        // 애니메이션 이름이 IdleNormal 이 아니면 Play
-        if (curAnimStateInfo.IsName("IdleNormal") == false)
+        if (!curAnimStateInfo.IsName("IdleNormal"))
+        {
             anim.Play("IdleNormal", 0, 0);
+        }
 
-        // 몬스터가 Idle 상태일 때 두리번 거리게 하는 코드
-        // 50% 확률로 좌/우로 돌아 보기
         int dir = Random.Range(0f, 1f) > 0.5f ? 1 : -1;
-
-        // 회전 속도 설정
         float lookSpeed = Random.Range(25f, 40f);
 
-        // IdleNormal 재생 시간 동안 돌아보기
         for (float i = 0; i < curAnimStateInfo.length; i += Time.deltaTime)
         {
-            transform.localEulerAngles = new Vector3(0f, transform.localEulerAngles.y + (dir) * Time.deltaTime * lookSpeed, 0f);
-
+            transform.localEulerAngles += new Vector3(0f, dir * Time.deltaTime * lookSpeed, 0f);
             yield return null;
         }
     }
@@ -78,31 +75,24 @@ public class Monster : MonoBehaviour
     {
         var curAnimStateInfo = anim.GetCurrentAnimatorStateInfo(0);
 
-        if (curAnimStateInfo.IsName("WalkFWD") == false)
+        if (!curAnimStateInfo.IsName("WalkFWD"))
         {
             anim.Play("WalkFWD", 0, 0);
-            // SetDestination 을 위해 한 frame을 넘기기위한 코드
             yield return null;
         }
 
-        // 목표까지의 남은 거리가 멈추는 지점보다 작거나 같으면
         if (nmAgent.remainingDistance <= nmAgent.stoppingDistance)
         {
-            // StateMachine 을 공격으로 변경
             ChangeState(State.ATTACK);
         }
-        // 목표와의 거리가 멀어진 경우
         else if (nmAgent.remainingDistance > lostDistance)
         {
             target = null;
             nmAgent.SetDestination(transform.position);
-            yield return null;
-            // StateMachine 을 대기로 변경
             ChangeState(State.IDLE);
         }
         else
         {
-            // WalkFWD 애니메이션의 한 사이클 동안 대기
             yield return new WaitForSeconds(curAnimStateInfo.length);
         }
     }
@@ -110,67 +100,58 @@ public class Monster : MonoBehaviour
     IEnumerator ATTACK()
     {
         var curAnimStateInfo = anim.GetCurrentAnimatorStateInfo(0);
-
-        // 공격 애니메이션 실행
         anim.Play("Attack01", 0, 0);
 
-        // 플레이어에게 데미지를 줌
         if (target != null && target.CompareTag("Player"))
         {
             PlayerController player = target.GetComponent<PlayerController>();
             if (player != null)
             {
-                float damage = 5.0f; // 몬스터의 공격 데미지
+                float damage = 5.0f;
                 player.TakeDamage(damage);
                 Debug.Log($"플레이어에게 {damage} 데미지를 줌");
             }
         }
 
-        // 거리가 멀어지면
         if (nmAgent.remainingDistance > nmAgent.stoppingDistance)
         {
-            // StateMachine을 추적으로 변경
             ChangeState(State.CHASE);
         }
         else
         {
-            // 공격 애니메이션의 두 배 길이만큼 대기
             yield return new WaitForSeconds(curAnimStateInfo.length * 2f);
         }
     }
 
     IEnumerator KILLED()
     {
-        // 사망 애니메이션 재생
         anim.Play("Die", 0, 0);
-
-        // 사망 애니메이션이 끝날 때까지 대기
         yield return new WaitForSeconds(anim.GetCurrentAnimatorStateInfo(0).length);
-
-        // 오브젝트 제거
         Destroy(gameObject);
     }
 
     void ChangeState(State newState)
     {
+        if (state == State.KILLED) return;
         state = newState;
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        if (state == State.KILLED) return;
+
         if (other.CompareTag("Player"))
         {
             target = other.transform;
             nmAgent.SetDestination(target.position);
             ChangeState(State.CHASE);
         }
-
         else if (other.CompareTag("Weapon"))
         {
-            WeaponController weapon = other.GetComponent<WeaponController>();
-            if (weapon != null)
+            WeaponController weapon = other.GetComponentInParent<WeaponController>();
+            if (weapon != null && weapon.enabled)
             {
-                TakeDamage(weapon.damage); // 무기의 공격력을 가져와 데미지 적용
+                TakeDamage(weapon.damage);
             }
         }
     }
@@ -182,7 +163,6 @@ public class Monster : MonoBehaviour
         currentHP -= damage;
         Debug.Log($"몬스터 체력: {currentHP}/{maxHP}");
 
-        // HP 바 업데이트
         UpdateHPBar();
 
         if (currentHP <= 0)
@@ -199,16 +179,18 @@ public class Monster : MonoBehaviour
             Slider slider = hpBar.GetComponent<Slider>();
             if (slider != null)
             {
-                slider.value = currentHP / maxHP; // HP 비율 설정
+                slider.value = currentHP / maxHP;
             }
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (target == null) return;
-        // target 이 null 이 아니면 target 을 계속 추적
-        nmAgent.SetDestination(target.position);
+        if (state == State.KILLED) return;
+
+        if (target != null)
+        {
+            nmAgent.SetDestination(target.position);
+        }
     }
 }

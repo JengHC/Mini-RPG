@@ -30,6 +30,8 @@ public class PlayerController : MonoBehaviour
 
         Managers.Input.MouseAction -= OnMouseClicked;
         Managers.Input.MouseAction += OnMouseClicked;
+
+        
     }
 
     public enum PlayerState
@@ -73,12 +75,12 @@ public class PlayerController : MonoBehaviour
         anim.SetBool("isWalk", false);
     }
 
-    void UpdateAttack()
+    void UpdateAttack(string attackTrigger)
     {
         if (isAttacking) return;
 
         Animator anim = GetComponent<Animator>();
-        anim.SetTrigger("Attack");
+        anim.SetTrigger(attackTrigger);
         isAttacking = true;
 
         WeaponController weapon = GetComponentInChildren<WeaponController>();
@@ -112,18 +114,45 @@ public class PlayerController : MonoBehaviour
             case PlayerState.Idle:
                 UpdateIdle();
                 break;
-
-            case PlayerState.Attack:
-                UpdateAttack();
-                break;
         }
-
-        // Q 키를 누르면 공격 상태로 전환
-        if (Input.GetKeyDown(KeyCode.Q) && _state != PlayerState.Attack)
+        // 공격 키 입력 처리
+        if (_state != PlayerState.Attack)
         {
-            _state = PlayerState.Attack;
-            Debug.Log("Q 키 입력: 공격 상태로 전환");
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                _state = PlayerState.Attack;
+                UpdateAttack("Attack"); // Q 키 공격
+                Debug.Log("Q 키 입력: 공격1 실행");
+            }
+            else if (Input.GetKeyDown(KeyCode.W))
+            {
+                _state = PlayerState.Attack;
+                UpdateAttack("Attack2"); // W 키 공격
+                Debug.Log("W 키 입력: 공격2 실행");
+            }
+            else if (Input.GetKeyDown(KeyCode.E))
+            {
+                _state = PlayerState.Attack;
+                UpdateAttack("Attack3"); // E 키 공격
+                Debug.Log("E 키 입력: 공격3 실행");
+            }
+            else if (Input.GetKeyDown(KeyCode.R))
+            {
+                _state = PlayerState.Attack;
+                UpdateAttack("Attack4"); // R 키 공격
+                Debug.Log("R 키 입력: 공격4 실행");
+            }
         }
+    }
+
+    // UI 버튼에 의해 호출됩니다.
+    // 인자로 넘어온 skill 정보에 따라 애니메이션을 플레이하고
+    // damage 정보 만큼 피해를 입힙니다.
+    public void ActivateSkill(Skill skill)
+    {
+        Animator anim = GetComponent<Animator>();
+        anim.Play(skill.animationName);
+        //print(string.Format("적에게 스킬 {0} 로 {1} 의 피해를 주었습니다.", skill.name, skill.damage));
     }
 
     // 플레이어가 피해를 입었을 때 호출
@@ -138,6 +167,8 @@ public class PlayerController : MonoBehaviour
         {
             currentHP = 0;
             _state = PlayerState.Die;
+            Animator anim = GetComponent<Animator>();
+            anim.Play("Die");
             Debug.Log("플레이어가 죽었습니다!");
         }
 
