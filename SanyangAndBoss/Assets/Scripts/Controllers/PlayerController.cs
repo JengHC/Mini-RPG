@@ -18,6 +18,9 @@ public class PlayerController : MonoBehaviour
     Vector3 _destPos;
     private bool isAttacking = false; // 공격 중인지 확인하는 플래그
 
+    [SerializeField]
+    private PopupManager popupManager;
+
     void Start()
     {
         currentHP = maxHP; // 초기 HP 설정
@@ -31,7 +34,7 @@ public class PlayerController : MonoBehaviour
         Managers.Input.MouseAction -= OnMouseClicked;
         Managers.Input.MouseAction += OnMouseClicked;
 
-        
+
     }
 
     public enum PlayerState
@@ -167,9 +170,15 @@ public class PlayerController : MonoBehaviour
         {
             currentHP = 0;
             _state = PlayerState.Die;
+
             Animator anim = GetComponent<Animator>();
             anim.Play("Die");
+
+            // 게임 오버 팝업 표시
+            popupManager.ShowGameOverPopup();
+
             Debug.Log("플레이어가 죽었습니다!");
+
         }
 
         // PlayerHPBar 업데이트

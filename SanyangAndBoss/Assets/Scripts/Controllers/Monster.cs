@@ -6,16 +6,7 @@ using UnityEngine.UI;
 
 public class Monster : MonoBehaviour
 {
-    Transform target;
-    NavMeshAgent nmAgent;
-    Animator anim;
-
-    [SerializeField] private float maxHP = 10; // 최대 체력
-    private float currentHP; // 현재 체력
-    public GameObject hpBar;
-    public float lostDistance;
-
-    enum State
+    public enum State
     {
         IDLE,
         CHASE,
@@ -23,137 +14,138 @@ public class Monster : MonoBehaviour
         KILLED
     }
 
-    State state;
+    [Header("Monster Settings")]
+    public float maxHP = 10f;
+    public float lostDistance = 10f;
+    public float attackDistance = 1f;
+
+    [Header("Attack Settings")]
+    public float attackCooldown = 2.0f; // 공격 간 최소 시간
+    private float lastAttackTime; // 마지막 공격 시간
+
+    private float currentHP;
+    private NavMeshAgent nmAgent;
+    private Animator anim;
+    private Transform target;
+
+    public GameObject hpBar;
+    public State state { get; private set; }
+    public bool IsAlive => state != State.KILLED;
+
+    private Rigidbody rb; // 리지드바디
 
     void Start()
     {
         anim = GetComponent<Animator>();
         nmAgent = GetComponent<NavMeshAgent>();
+        rb = GetComponent<Rigidbody>();
 
         currentHP = maxHP;
         state = State.IDLE;
+
+        MonsterManager.Instance.monsters.Add(this);
 
         if (hpBar != null)
         {
             Slider slider = hpBar.GetComponent<Slider>();
             if (slider != null)
-                slider.value = 1; // 체력 비율 초기화
+                slider.value = 1;
         }
 
-        StartCoroutine(StateMachine());
-    }
-
-    IEnumerator StateMachine()
-    {
-        while (state != State.KILLED)
+        // Rigidbody 설정
+        if (rb != null)
         {
-            yield return StartCoroutine(state.ToString());
-        }
-
-        StartCoroutine(KILLED());
-    }
-
-    IEnumerator IDLE()
-    {
-        var curAnimStateInfo = anim.GetCurrentAnimatorStateInfo(0);
-        if (!curAnimStateInfo.IsName("IdleNormal"))
-        {
-            anim.Play("IdleNormal", 0, 0);
-        }
-
-        int dir = Random.Range(0f, 1f) > 0.5f ? 1 : -1;
-        float lookSpeed = Random.Range(25f, 40f);
-
-        for (float i = 0; i < curAnimStateInfo.length; i += Time.deltaTime)
-        {
-            transform.localEulerAngles += new Vector3(0f, dir * Time.deltaTime * lookSpeed, 0f);
-            yield return null;
+            rb.isKinematic = false;
+            rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         }
     }
 
-    IEnumerator CHASE()
+    void OnDestroy()
     {
-        var curAnimStateInfo = anim.GetCurrentAnimatorStateInfo(0);
+        MonsterManager.Instance.monsters.Remove(this);
+    }
 
-        if (!curAnimStateInfo.IsName("WalkFWD"))
-        {
-            anim.Play("WalkFWD", 0, 0);
-            yield return null;
-        }
+    public void ChangeState(State newState)
+    {
+        if (state == State.KILLED) return;
+        if (state == newState) return;
 
-        if (nmAgent.remainingDistance <= nmAgent.stoppingDistance)
+        state = newState;
+
+        switch (state)
         {
-            ChangeState(State.ATTACK);
+            case State.IDLE:
+                StopMoving();
+                PlayAnimation("IdleNormal");
+                break;
+
+            case State.CHASE:
+                StartChasing();
+                PlayAnimation("WalkFWD");
+                break;
+
+            case State.ATTACK:
+                StopMoving();
+                StartCoroutine(ATTACK());
+                break;
+
+            case State.KILLED:
+                Die();
+                break;
         }
-        else if (nmAgent.remainingDistance > lostDistance)
+    }
+
+    private void StartChasing()
+    {
+        if (MonsterManager.Instance.player != null)
         {
-            target = null;
-            nmAgent.SetDestination(transform.position);
-            ChangeState(State.IDLE);
+            target = MonsterManager.Instance.player;
         }
-        else
-        {
-            yield return new WaitForSeconds(curAnimStateInfo.length);
-        }
+    }
+
+    private void StopMoving()
+    {
+        nmAgent.SetDestination(transform.position);
     }
 
     IEnumerator ATTACK()
     {
-        var curAnimStateInfo = anim.GetCurrentAnimatorStateInfo(0);
-        anim.Play("Attack01", 0, 0);
-
-        if (target != null && target.CompareTag("Player"))
+        while (true)
         {
-            PlayerController player = target.GetComponent<PlayerController>();
-            if (player != null)
+            if (target != null && Vector3.Distance(transform.position, target.position) <= attackDistance)
             {
-                float damage = 5.0f;
-                player.TakeDamage(damage);
-                Debug.Log($"플레이어에게 {damage} 데미지를 줌");
+                if (Time.time >= lastAttackTime + attackCooldown)
+                {
+                    PlayAnimation("Attack01");
+                    lastAttackTime = Time.time;
+
+                    PlayerController player = target.GetComponent<PlayerController>();
+                    if (player != null)
+                    {
+                        player.TakeDamage(5.0f);
+                        Debug.Log("플레이어를 공격했습니다!");
+                    }
+                }
             }
-        }
-
-        if (nmAgent.remainingDistance > nmAgent.stoppingDistance)
-        {
-            ChangeState(State.CHASE);
-        }
-        else
-        {
-            yield return new WaitForSeconds(curAnimStateInfo.length * 2f);
-        }
-    }
-
-    IEnumerator KILLED()
-    {
-        anim.Play("Die", 0, 0);
-        yield return new WaitForSeconds(anim.GetCurrentAnimatorStateInfo(0).length);
-        Destroy(gameObject);
-    }
-
-    void ChangeState(State newState)
-    {
-        if (state == State.KILLED) return;
-        state = newState;
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (state == State.KILLED) return;
-
-        if (other.CompareTag("Player"))
-        {
-            target = other.transform;
-            nmAgent.SetDestination(target.position);
-            ChangeState(State.CHASE);
-        }
-        else if (other.CompareTag("Weapon"))
-        {
-            WeaponController weapon = other.GetComponentInParent<WeaponController>();
-            if (weapon != null && weapon.enabled)
+            else
             {
-                TakeDamage(weapon.damage);
+                ChangeState(State.CHASE);
+                yield break;
             }
+
+            yield return null;
         }
+    }
+
+    private void PlayAnimation(string animationName)
+    {
+        anim.Play(animationName, 0, 0);
+    }
+
+    private void Die()
+    {
+        PlayAnimation("Die");
+        Destroy(gameObject, 2f);
     }
 
     public void TakeDamage(float damage)
@@ -162,7 +154,6 @@ public class Monster : MonoBehaviour
 
         currentHP -= damage;
         Debug.Log($"몬스터 체력: {currentHP}/{maxHP}");
-
         UpdateHPBar();
 
         if (currentHP <= 0)
@@ -172,7 +163,7 @@ public class Monster : MonoBehaviour
         }
     }
 
-    void UpdateHPBar()
+    private void UpdateHPBar()
     {
         if (hpBar != null)
         {
@@ -186,11 +177,22 @@ public class Monster : MonoBehaviour
 
     void Update()
     {
-        if (state == State.KILLED) return;
-
-        if (target != null)
+        if (state == State.CHASE && target != null)
         {
-            nmAgent.SetDestination(target.position);
+            nmAgent.SetDestination(target.position); // 플레이어 위치 지속적으로 갱신
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            Debug.Log("플레이어와 충돌!");
+            PlayerController player = collision.gameObject.GetComponent<PlayerController>();
+            if (player != null)
+            {
+                player.TakeDamage(5.0f); // 충돌 시 데미지
+            }
         }
     }
 }
