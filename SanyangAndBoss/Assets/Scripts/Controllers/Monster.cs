@@ -145,6 +145,11 @@ public class Monster : MonoBehaviour
     private void Die()
     {
         PlayAnimation("Die");
+        // 몬스터 사망 시 MonsterKillManager에 알림
+        if (MonsterKillManager.Instance != null)
+        {
+            MonsterKillManager.Instance.MonsterKilled();
+        }
         Destroy(gameObject, 2f);
     }
 
