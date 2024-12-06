@@ -20,6 +20,10 @@ public class SkillButton : MonoBehaviour
     // 버튼 비활성화를 위한 Button 컴포넌트
     private Button button;
 
+    [Header("Sound Effects")]
+    [SerializeField] private AudioSource skillAudioSource; // 스킬 효과음용 AudioSource
+    [SerializeField] private AudioClip skillClip;          // 스킬 효과음
+
     void Start()
     {
         // Skill에 등록된 스킬 아이콘 설정
@@ -48,7 +52,7 @@ public class SkillButton : MonoBehaviour
 
     public void OnClicked()
     {
-        // 쿨타임 중이라면 동작하지 않음
+        // 쿨타임 중이라면 아무 동작도 하지 않음
         if (imgCool != null && imgCool.fillAmount > 0)
         {
             Debug.Log("스킬이 쿨타임 중입니다.");
@@ -65,6 +69,9 @@ public class SkillButton : MonoBehaviour
             Debug.LogError("PlayerController가 설정되지 않았습니다.");
             return;
         }
+
+        // 스킬 효과음 재생
+        PlaySkillSound();
 
         // 스킬 쿨타임 시작
         StartCoroutine(SC_Cool());
@@ -103,6 +110,14 @@ public class SkillButton : MonoBehaviour
         if (button != null)
         {
             button.interactable = true;
+        }
+    }
+
+    private void PlaySkillSound()
+    {
+        if (skillAudioSource != null && skillClip != null)
+        {
+            skillAudioSource.PlayOneShot(skillClip);
         }
     }
 }

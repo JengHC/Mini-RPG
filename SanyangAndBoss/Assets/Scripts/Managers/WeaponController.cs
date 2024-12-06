@@ -8,6 +8,10 @@ public class WeaponController : MonoBehaviour
     [SerializeField] private Collider weaponCollider;
     [SerializeField] private float attackDuration = 0.5f;
 
+    //[Header("Slash Sound Effect Settings")]
+    //public AudioClip slashSound; // 공격 효과음
+    //private AudioSource audioSource;
+
     private bool isAttacking = false;
 
     private void Awake()
@@ -20,6 +24,7 @@ public class WeaponController : MonoBehaviour
             weaponCollider.isTrigger = true;
             weaponCollider.enabled = false;
         }
+
     }
 
     public void StartAttack()
@@ -28,6 +33,19 @@ public class WeaponController : MonoBehaviour
 
         isAttacking = true;
         weaponCollider.enabled = true;
+
+        //audioSource = GetComponent<AudioSource>();
+        //// AudioSource 설정
+        //if (audioSource == null)
+        //{
+        //    audioSource = gameObject.AddComponent<AudioSource>();
+        //}
+        //audioSource.playOnAwake = false;
+        //if (audioSource != null)
+        //{
+        //    audioSource.clip = slashSound;
+        //    audioSource.Play();
+        //}
     }
 
     public void StopAttack()

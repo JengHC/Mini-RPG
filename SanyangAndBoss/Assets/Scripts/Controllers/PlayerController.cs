@@ -21,6 +21,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float footstepInterval = 0.5f; // 발소리 간격 (초 단위)
     private float lastFootstepTime = 0f; // 마지막 발소리 재생 시간 기록
 
+    //[Header("Skill Sound Effects")]
+    //[SerializeField] private AudioSource skillAudioSource; // 스킬 효과음용 AudioSource
+    //[SerializeField] private AudioClip skillQClip; // Q 스킬 효과음
+    //[SerializeField] private AudioClip skillWClip; // W 스킬 효과음
+    //[SerializeField] private AudioClip skillEClip; // E 스킬 효과음
+    //[SerializeField] private AudioClip skillRClip; // R 스킬 효과음
+
     // 스킬 버튼 연결 (Q, W, E, R 각각)
     public SkillButton skillQButton;
     public SkillButton skillWButton;
@@ -51,6 +58,11 @@ public class PlayerController : MonoBehaviour
         {
             footstepAudioSource.clip = footstepClip;
         }
+
+        //if (skillAudioSource == null)
+        //{
+        //    skillAudioSource = gameObject.AddComponent<AudioSource>();
+        //}
     }
 
     public enum PlayerState
@@ -99,6 +111,14 @@ public class PlayerController : MonoBehaviour
         if (footstepAudioSource != null && footstepClip != null)
             footstepAudioSource.PlayOneShot(footstepClip);
     }
+
+    //void PlaySkillSound(AudioClip clip)
+    //{
+    //    if (skillAudioSource != null && clip != null)
+    //    {
+    //        skillAudioSource.PlayOneShot(clip);
+    //    }
+    //}
 
     void UpdateIdle()
     {
@@ -157,19 +177,23 @@ public class PlayerController : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Q))
             {
                 skillQButton?.OnClicked(); // Q 버튼 스킬 호출
+                //PlaySkillSound(skillQClip); // Q 스킬 효과음 재생
                 Debug.Log("Q를 눌렀습니다");
             }
             else if (Input.GetKeyDown(KeyCode.W))
             {
                 skillWButton?.OnClicked(); // W 버튼 스킬 호출
+                //PlaySkillSound(skillWClip); // W 스킬 효과음 재생
             }
             else if (Input.GetKeyDown(KeyCode.E))
             {
                 skillEButton?.OnClicked(); // E 버튼 스킬 호출
+                //PlaySkillSound(skillEClip); // E 스킬 효과음 재생
             }
             else if (Input.GetKeyDown(KeyCode.R))
             {
                 skillRButton?.OnClicked(); // R 버튼 스킬 호출
+                //PlaySkillSound(skillRClip); // R 스킬 효과음 재생
             }
         }
     }

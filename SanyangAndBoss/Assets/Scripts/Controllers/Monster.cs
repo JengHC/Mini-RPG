@@ -73,10 +73,10 @@ public class Monster : MonoBehaviour
         audioSource.playOnAwake = false;
     }
 
-    void OnDestroy()
-    {
-        MonsterManager.Instance.monsters.Remove(this);
-    }
+    //void OnDestroy()
+    //{
+    //    MonsterManager.Instance.monsters.Remove(this);
+    //}
 
     public void ChangeState(State newState)
     {
