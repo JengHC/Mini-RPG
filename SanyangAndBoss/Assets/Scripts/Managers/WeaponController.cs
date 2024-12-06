@@ -28,14 +28,17 @@ public class WeaponController : MonoBehaviour
 
         isAttacking = true;
         weaponCollider.enabled = true;
-        StartCoroutine(DisableColliderAfterAttack());
     }
 
-    private IEnumerator DisableColliderAfterAttack()
+    public void StopAttack()
     {
-        yield return new WaitForSeconds(attackDuration);
         weaponCollider.enabled = false;
         isAttacking = false;
+    }
+
+    public void SetDamage(float damageValue)
+    {
+        damage = damageValue;
     }
 
     private void OnTriggerEnter(Collider other)

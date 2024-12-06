@@ -5,23 +5,29 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField]
-    float _speed = 10.0f;
-
-    [SerializeField]
-    float maxHP = 100.0f; // 최대 HP
+    [SerializeField] float _speed = 10.0f;
+    [SerializeField] float maxHP = 100.0f; // 최대 HP
     float currentHP;
-
-    [SerializeField]
-    PlayerHPBar hpBar; // PlayerHPBar를 연결
+    [SerializeField] PlayerHPBar hpBar; // PlayerHPBar를 연결
 
     Vector3 _destPos;
     private bool isAttacking = false; // 공격 중인지 확인하는 플래그
 
-    [SerializeField]
-    private PopupManager popupManager;
+    [SerializeField] private PopupManager popupManager;
 
-    void Start()
+    [Header("Audio")]
+    [SerializeField] private AudioSource footstepAudioSource; // 발소리용 AudioSource
+    [SerializeField] private AudioClip footstepClip; // 발소리 AudioClip
+    [SerializeField] private float footstepInterval = 0.5f; // 발소리 간격 (초 단위)
+    private float lastFootstepTime = 0f; // 마지막 발소리 재생 시간 기록
+
+    // 스킬 버튼 연결 (Q, W, E, R 각각)
+    public SkillButton skillQButton;
+    public SkillButton skillWButton;
+    public SkillButton skillEButton;
+    public SkillButton skillRButton;
+
+    private void Start()
     {
         currentHP = maxHP; // 초기 HP 설정
 
@@ -31,10 +37,20 @@ public class PlayerController : MonoBehaviour
             hpBar.SetMaxHP(maxHP);
         }
 
+        // Input 이벤트 연결
         Managers.Input.MouseAction -= OnMouseClicked;
         Managers.Input.MouseAction += OnMouseClicked;
 
+        // AudioSource 확인 및 설정
+        if (footstepAudioSource == null)
+        {
+            footstepAudioSource = gameObject.AddComponent<AudioSource>();
+        }
 
+        if (footstepClip != null)
+        {
+            footstepAudioSource.clip = footstepClip;
+        }
     }
 
     public enum PlayerState
@@ -64,11 +80,24 @@ public class PlayerController : MonoBehaviour
             float moveDist = Mathf.Clamp(_speed * Time.deltaTime, 0, dir.magnitude);
             transform.position += dir.normalized * moveDist;
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), 30 * Time.deltaTime);
+
+            // 발소리 재생
+            if (Time.time - lastFootstepTime >= footstepInterval)
+            {
+                PlayFootstepSound();
+                lastFootstepTime = Time.time;
+            }
         }
 
-        // 애니메이션       
+        // 애니메이션
         Animator anim = GetComponent<Animator>();
         anim.SetBool("isWalk", true);
+    }
+
+    void PlayFootstepSound()
+    {
+        if (footstepAudioSource != null && footstepClip != null)
+            footstepAudioSource.PlayOneShot(footstepClip);
     }
 
     void UpdateIdle()
@@ -78,20 +107,23 @@ public class PlayerController : MonoBehaviour
         anim.SetBool("isWalk", false);
     }
 
-    void UpdateAttack(string attackTrigger)
+    public void PerformAttack(string attackTrigger, float attackDamage)
     {
-        if (isAttacking) return;
+        if (_state == PlayerState.Die || isAttacking) return;
 
+        // 공격 애니메이션 트리거
         Animator anim = GetComponent<Animator>();
-        anim.SetTrigger(attackTrigger);
-        isAttacking = true;
+        anim.SetTrigger(attackTrigger); // 전달받은 트리거 사용
 
+        // 무기 공격 처리
         WeaponController weapon = GetComponentInChildren<WeaponController>();
         if (weapon != null)
         {
-            weapon.StartAttack(); // 무기 공격 시작
+            weapon.SetDamage(attackDamage); // 무기 데미지 설정
+            weapon.StartAttack();
         }
 
+        isAttacking = true;
         StartCoroutine(ResetAttack());
     }
 
@@ -118,47 +150,30 @@ public class PlayerController : MonoBehaviour
                 UpdateIdle();
                 break;
         }
-        // 공격 키 입력 처리
+
+        // 키보드 입력 처리
         if (_state != PlayerState.Attack)
         {
             if (Input.GetKeyDown(KeyCode.Q))
             {
-                _state = PlayerState.Attack;
-                UpdateAttack("Attack"); // Q 키 공격
-                Debug.Log("Q 키 입력: 공격1 실행");
+                skillQButton?.OnClicked(); // Q 버튼 스킬 호출
+                Debug.Log("Q를 눌렀습니다");
             }
             else if (Input.GetKeyDown(KeyCode.W))
             {
-                _state = PlayerState.Attack;
-                UpdateAttack("Attack2"); // W 키 공격
-                Debug.Log("W 키 입력: 공격2 실행");
+                skillWButton?.OnClicked(); // W 버튼 스킬 호출
             }
             else if (Input.GetKeyDown(KeyCode.E))
             {
-                _state = PlayerState.Attack;
-                UpdateAttack("Attack3"); // E 키 공격
-                Debug.Log("E 키 입력: 공격3 실행");
+                skillEButton?.OnClicked(); // E 버튼 스킬 호출
             }
             else if (Input.GetKeyDown(KeyCode.R))
             {
-                _state = PlayerState.Attack;
-                UpdateAttack("Attack4"); // R 키 공격
-                Debug.Log("R 키 입력: 공격4 실행");
+                skillRButton?.OnClicked(); // R 버튼 스킬 호출
             }
         }
     }
 
-    // UI 버튼에 의해 호출됩니다.
-    // 인자로 넘어온 skill 정보에 따라 애니메이션을 플레이하고
-    // damage 정보 만큼 피해를 입힙니다.
-    public void ActivateSkill(Skill skill)
-    {
-        Animator anim = GetComponent<Animator>();
-        anim.Play(skill.animationName);
-        //print(string.Format("적에게 스킬 {0} 로 {1} 의 피해를 주었습니다.", skill.name, skill.damage));
-    }
-
-    // 플레이어가 피해를 입었을 때 호출
     public void TakeDamage(float damage)
     {
         if (_state == PlayerState.Die) return;
@@ -174,14 +189,10 @@ public class PlayerController : MonoBehaviour
             Animator anim = GetComponent<Animator>();
             anim.Play("Die");
 
-            // 게임 오버 팝업 표시
             popupManager.ShowGameOverPopup();
-
             Debug.Log("플레이어가 죽었습니다!");
-
         }
 
-        // PlayerHPBar 업데이트
         if (hpBar != null)
         {
             hpBar.UpdateHP(currentHP);
@@ -194,8 +205,6 @@ public class PlayerController : MonoBehaviour
             return;
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        Debug.DrawRay(Camera.main.transform.position, ray.direction * 100.0f, Color.red, 1.0f);
-
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 100.0f, LayerMask.GetMask("Wall")))
         {
