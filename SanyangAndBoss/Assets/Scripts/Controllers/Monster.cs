@@ -34,11 +34,17 @@ public class Monster : MonoBehaviour
 
     private Rigidbody rb; // 리지드바디
 
+    [Header("Audio Settings")]
+    public AudioClip dieSound; // 죽는 효과음
+    public AudioClip attackSound;
+    private AudioSource audioSource;
+
     void Start()
     {
         anim = GetComponent<Animator>();
         nmAgent = GetComponent<NavMeshAgent>();
         rb = GetComponent<Rigidbody>();
+        audioSource = GetComponent<AudioSource>();
 
         currentHP = maxHP;
         state = State.IDLE;
@@ -58,6 +64,13 @@ public class Monster : MonoBehaviour
             rb.isKinematic = false;
             rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         }
+
+        // AudioSource 설정
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+        audioSource.playOnAwake = false;
     }
 
     void OnDestroy()
@@ -119,6 +132,13 @@ public class Monster : MonoBehaviour
                     PlayAnimation("Attack01");
                     lastAttackTime = Time.time;
 
+                    // 공격 효과음 재생
+                    if (audioSource != null && attackSound != null)
+                    {
+                        audioSource.clip = attackSound;
+                        audioSource.Play();
+                    }
+
                     PlayerController player = target.GetComponent<PlayerController>();
                     if (player != null)
                     {
@@ -145,6 +165,14 @@ public class Monster : MonoBehaviour
     private void Die()
     {
         PlayAnimation("Die");
+
+        // 효과음 재생
+        if (audioSource != null && dieSound != null)
+        {
+            audioSource.clip = dieSound;
+            audioSource.Play();
+        }
+
         // 몬스터 사망 시 MonsterKillManager에 알림
         if (MonsterKillManager.Instance != null)
         {
