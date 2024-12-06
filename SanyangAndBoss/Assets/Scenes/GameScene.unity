@@ -10286,6 +10286,8 @@ MonoBehaviour:
   attackDistance: 5
   attackCooldown: 1
   hpBar: {fileID: 4488889037620793759, guid: 8875ae1bd65d4ae4f92870f9f6900ced, type: 3}
+  dieSound: {fileID: 0}
+  attackSound: {fileID: 0}
 --- !u!1001 &842299461992061522
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10530,6 +10532,8 @@ MonoBehaviour:
   attackDistance: 2
   attackCooldown: 1
   hpBar: {fileID: 4488889037620793759, guid: 8875ae1bd65d4ae4f92870f9f6900ced, type: 3}
+  dieSound: {fileID: 0}
+  attackSound: {fileID: 0}
 --- !u!114 &1124106251682609267
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10547,6 +10551,8 @@ MonoBehaviour:
   attackDistance: 5
   attackCooldown: 1
   hpBar: {fileID: 4488889037620793759, guid: 8875ae1bd65d4ae4f92870f9f6900ced, type: 3}
+  dieSound: {fileID: 8300000, guid: 37cdbcb02c3324849ac457dfc5b1058e, type: 3}
+  attackSound: {fileID: 8300000, guid: 0462feb393ce2b64b9f78c8bc9303014, type: 3}
 --- !u!114 &1124106251942915800
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10564,6 +10570,8 @@ MonoBehaviour:
   attackDistance: 2
   attackCooldown: 1
   hpBar: {fileID: 4488889037620793759, guid: 8875ae1bd65d4ae4f92870f9f6900ced, type: 3}
+  dieSound: {fileID: 0}
+  attackSound: {fileID: 0}
 --- !u!114 &1124106252309541749
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10581,6 +10589,8 @@ MonoBehaviour:
   attackDistance: 2
   attackCooldown: 1
   hpBar: {fileID: 4488889037620793759, guid: 8875ae1bd65d4ae4f92870f9f6900ced, type: 3}
+  dieSound: {fileID: 0}
+  attackSound: {fileID: 0}
 --- !u!114 &1124106252368267140
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10598,6 +10608,8 @@ MonoBehaviour:
   attackDistance: 2
   attackCooldown: 1
   hpBar: {fileID: 4488889037620793759, guid: 8875ae1bd65d4ae4f92870f9f6900ced, type: 3}
+  dieSound: {fileID: 0}
+  attackSound: {fileID: 0}
 --- !u!114 &1124106253262892798
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10615,6 +10627,8 @@ MonoBehaviour:
   attackDistance: 5
   attackCooldown: 1
   hpBar: {fileID: 4488889037620793759, guid: 8875ae1bd65d4ae4f92870f9f6900ced, type: 3}
+  dieSound: {fileID: 8300000, guid: 37cdbcb02c3324849ac457dfc5b1058e, type: 3}
+  attackSound: {fileID: 0}
 --- !u!114 &1124106253281749453
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10632,6 +10646,8 @@ MonoBehaviour:
   attackDistance: 2
   attackCooldown: 1
   hpBar: {fileID: 4488889037620793759, guid: 8875ae1bd65d4ae4f92870f9f6900ced, type: 3}
+  dieSound: {fileID: 0}
+  attackSound: {fileID: 0}
 --- !u!1001 &1199645208780880033
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15205,6 +15221,7 @@ GameObject:
   - component: {fileID: 3205282803663654047}
   - component: {fileID: 1124106251682609267}
   - component: {fileID: 7163984012048677517}
+  - component: {fileID: 7163984012048677518}
   m_Layer: 0
   m_Name: Slime (2)
   m_TagString: Monster
@@ -15331,6 +15348,7 @@ GameObject:
   - component: {fileID: 3205282803106945554}
   - component: {fileID: 1124106253262892798}
   - component: {fileID: 7163984012479622146}
+  - component: {fileID: 7163984012479622147}
   m_Layer: 0
   m_Name: Slime (1)
   m_TagString: Monster
@@ -19163,6 +19181,103 @@ Rigidbody:
   m_Interpolate: 2
   m_Constraints: 126
   m_CollisionDetection: 1
+--- !u!82 &7163984012048677518
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4281154174418374752}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!135 &7163984012441424825
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -19259,6 +19374,103 @@ Rigidbody:
   m_Interpolate: 2
   m_Constraints: 126
   m_CollisionDetection: 1
+--- !u!82 &7163984012479622147
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4281154176050956013}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!135 &7163984012594916146
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -19756,8 +19968,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 118, y: -13.099976}
-  m_SizeDelta: {x: 198.2843, y: 13.3238}
+  m_AnchoredPosition: {x: 256.3966, y: -32.3218}
+  m_SizeDelta: {x: 440.7876, y: 47.0048}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &7565640396705152827
 PrefabInstance:
@@ -21001,7 +21213,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -0.005}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0.40000153, y: 0}
+  m_AnchoredPosition: {x: 0.3999939, y: 0}
   m_SizeDelta: {x: -3.4066162, y: -4.477295}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &8428664922795789560
