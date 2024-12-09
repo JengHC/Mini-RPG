@@ -150,7 +150,7 @@ public class BossMonster : MonoBehaviour
                     PlayerController player = target.GetComponent<PlayerController>();
                     if (player != null)
                     {
-                        player.TakeDamage(15f);
+                        player.TakeDamage(7f);
                         Debug.Log("플레이어를 공격했습니다!");
                     }
                 }

@@ -12519,6 +12519,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8300000, guid: 3069c9f7e833f8e4099228c28f9d65dd, type: 3}
     - target: {fileID: 8773095524724338965, guid: 206e33771c8d5dd4b93a2c604a4134ba, type: 3}
+      propertyPath: hpBar
+      value: 
+      objectReference: {fileID: 5245279990184437257}
+    - target: {fileID: 8773095524724338965, guid: 206e33771c8d5dd4b93a2c604a4134ba, type: 3}
       propertyPath: popupManager
       value: 
       objectReference: {fileID: 1389979460}
@@ -12538,7 +12542,12 @@ PrefabInstance:
       propertyPath: skillWButton
       value: 
       objectReference: {fileID: 1331038926}
-    m_RemovedComponents: []
+    - target: {fileID: 8773095524724338965, guid: 206e33771c8d5dd4b93a2c604a4134ba, type: 3}
+      propertyPath: footstepAudioSource
+      value: 
+      objectReference: {fileID: 5245279990184437256}
+    m_RemovedComponents:
+    - {fileID: 2920976565705505745, guid: 206e33771c8d5dd4b93a2c604a4134ba, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -15041,6 +15050,22 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!82 &5245279990184437256 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 6384301940591733106, guid: 206e33771c8d5dd4b93a2c604a4134ba, type: 3}
+  m_PrefabInstance: {fileID: 2176288327772265926}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5245279990184437257 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5579196444022542298, guid: 206e33771c8d5dd4b93a2c604a4134ba, type: 3}
+  m_PrefabInstance: {fileID: 2176288327772265926}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5245279990184437245}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c22d5c9b128b5b246bf0d36dcabb3d7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &5269960067606831498
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17100,10 +17125,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbda0e321d24aed49ab016a78848878f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHP: 1000
-  lostDistance: 10
-  attackDistance: 5
-  attackCooldown: 1
+  maxHP: 500
+  lostDistance: 20
+  attackDistance: 10
+  attackCooldown: 1.5
   dropItemPrefab: {fileID: 5343324929410673325, guid: dedc7030a28fba24bb9ac9a7d0cf3b77, type: 3}
   weaponPrefab: {fileID: 5343324929410673325, guid: dedc7030a28fba24bb9ac9a7d0cf3b77, type: 3}
   dropRadius: 1
