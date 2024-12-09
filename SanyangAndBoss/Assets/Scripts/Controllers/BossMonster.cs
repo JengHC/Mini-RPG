@@ -25,7 +25,11 @@ public class BossMonster : MonoBehaviour
 
     [Header("Drop Item")]
     public GameObject dropItemPrefab;   // 드롭할 아이템 프리팹 
+    public GameObject weaponPrefab;     // 에디터에서 설정할 무기 프리팹
     public float dropRadius = 1.0f;     // 아이템 드롭 위치 범위
+
+    [Header("Popup")]
+    [SerializeField] private FinishPopupManager finishPopupManager;
 
     private float currentHP;
     private NavMeshAgent nmAgent;
@@ -146,7 +150,7 @@ public class BossMonster : MonoBehaviour
                     PlayerController player = target.GetComponent<PlayerController>();
                     if (player != null)
                     {
-                        player.TakeDamage(5.0f);
+                        player.TakeDamage(20f);
                         Debug.Log("플레이어를 공격했습니다!");
                     }
                 }
@@ -176,29 +180,36 @@ public class BossMonster : MonoBehaviour
             audioSource.clip = dieSound;
             audioSource.Play();
         }
-
-        // 몬스터 사망 시 MonsterKillManager에 알림
-        if (MonsterKillManager.Instance != null)
-        {
-            MonsterKillManager.Instance.MonsterKilled();
-        }
         DropItem();
 
-        Destroy(gameObject, 2f);
+        // FinishPopupManager 호출을 5초 뒤로 지연
+        StartCoroutine(ShowFinishPopupAfterDelay());
+
+        //Destroy(gameObject, 2f);
+    }
+
+    private IEnumerator ShowFinishPopupAfterDelay()
+    {
+        yield return new WaitForSeconds(5f);
+        if (finishPopupManager != null)
+        {
+            finishPopupManager.GameFinishPopup();
+        }
+        else
+        {
+            Debug.LogWarning("FinishPopupManager가 설정되지 않았습니다!");
+        }
     }
 
     private void DropItem()
     {
         if (dropItemPrefab != null)
         {
-            // 슬라임 위치에서 랜덤 위치를 계산
-            Vector3 dropPosition = transform.position + new Vector3(
-                Random.Range(-dropRadius, dropRadius), 0f, // Y축은 고정 (바닥)
-                Random.Range(-dropRadius, dropRadius)
-            );
+            Vector3 dropPosition = transform.position + new Vector3(0.5f, 3.15f, -8.8f);
 
             // 아이템 생성
-            Instantiate(dropItemPrefab, dropPosition, Quaternion.identity);
+            GameObject droppedItem = Instantiate(dropItemPrefab, dropPosition, Quaternion.identity);
+
             Debug.Log("Item dropped at: " + dropPosition);
         }
         else

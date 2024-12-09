@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     Vector3 _destPos;
     private bool isAttacking = false; // 공격 중인지 확인하는 플래그
 
+    [Header("Popup")]
     [SerializeField] private PopupManager popupManager;
 
     [Header("Audio")]

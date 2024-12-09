@@ -21,7 +21,7 @@ public class PopupManager : MonoBehaviour
 
     public void OnRestartButton()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        SceneManager.LoadScene("GameScene");
     }
 
     public void OnQuitButton()
