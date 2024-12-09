@@ -178,7 +178,7 @@ public class PlayerController : MonoBehaviour
             {
                 skillQButton?.OnClicked(); // Q 버튼 스킬 호출
                 //PlaySkillSound(skillQClip); // Q 스킬 효과음 재생
-                Debug.Log("Q를 눌렀습니다");
+                //Debug.Log("Q를 눌렀습니다");
             }
             else if (Input.GetKeyDown(KeyCode.W))
             {

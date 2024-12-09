@@ -70,5 +70,14 @@ public class WeaponController : MonoBehaviour
                 Debug.Log($"몬스터에게 {damage} 데미지를 입혔습니다.");
             }
         }
+        if (other.CompareTag("Monster"))
+        {
+            BossMonster bossmonster = other.GetComponent<BossMonster>();
+            if (bossmonster != null)
+            {
+                bossmonster.TakeDamage(damage);
+                Debug.Log($"몬스터에게 {damage} 데미지를 입혔습니다.");
+            }
+        }
     }
 }

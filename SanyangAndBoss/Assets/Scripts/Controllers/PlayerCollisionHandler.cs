@@ -18,7 +18,7 @@ public class PlayerCollisionHandler : MonoBehaviour
     public void TakeDamage(float damage)
     {
         playerHealth -= damage;
-        Debug.Log($"플레이어 체력: {playerHealth}");
+        //Debug.Log($"플레이어 체력: {playerHealth}");
 
         if (playerHealth <= 0)
         {

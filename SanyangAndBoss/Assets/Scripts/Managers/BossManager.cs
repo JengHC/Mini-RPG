@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MonsterManager : MonoBehaviour
+public class BossManager : MonoBehaviour
 {
-    public static MonsterManager Instance;
+    public static BossManager Instance;
 
-    public List<Monster> monsters = new List<Monster>();
     public List<BossMonster> bossmonsters = new List<BossMonster>();
     public Transform player; // 플레이어의 Transform
 
@@ -22,7 +21,7 @@ public class MonsterManager : MonoBehaviour
         if (player == null) return;
 
         // 모든 몬스터와 플레이어의 거리 계산
-        foreach (var monster in monsters)
+        foreach (var monster in bossmonsters)
         {
             if (monster != null && monster.IsAlive)
             {
@@ -30,15 +29,15 @@ public class MonsterManager : MonoBehaviour
 
                 if (distance <= monster.attackDistance)
                 {
-                    monster.ChangeState(Monster.State.ATTACK);
+                    monster.ChangeState(BossMonster.State.ATTACK);
                 }
                 else if (distance <= monster.lostDistance)
                 {
-                    monster.ChangeState(Monster.State.CHASE);
+                    monster.ChangeState(BossMonster.State.CHASE);
                 }
                 else
                 {
-                    monster.ChangeState(Monster.State.IDLE);
+                    monster.ChangeState(BossMonster.State.IDLE);
                 }
             }
         }

@@ -6,7 +6,7 @@ public class MonsterKillManager2 : MonoBehaviour
     public static MonsterKillManager2 Instance; // 싱글턴 패턴
 
     private int monsterKillCount = 0; // 죽인 몬스터 수
-    public int killCounts = 7; // 씬 전환을 위한 몬스터 수
+    public int killCounts = 1; // 씬 전환을 위한 몬스터 수
 
     private void Awake()
     {
