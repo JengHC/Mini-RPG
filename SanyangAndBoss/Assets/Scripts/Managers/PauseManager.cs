@@ -53,6 +53,6 @@ public class PauseManager : MonoBehaviour
     public void GoToMainMenu()
     {
         Time.timeScale = 1; // 게임 시간 복원
-        SceneManager.LoadScene("MainMenu"); // 메인 메뉴 씬으로 이동
+        SceneManager.LoadScene("MainScene"); // 메인 메뉴 씬으로 이동
     }
 }

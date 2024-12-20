@@ -17,7 +17,7 @@ public class FinishPopupManager : MonoBehaviour
 
     public void OnMainMenuButton()
     {
-        SceneManager.LoadScene("MainMenu");
+        SceneManager.LoadScene("MainScene");
     }
 
     public void OnRestartButton()

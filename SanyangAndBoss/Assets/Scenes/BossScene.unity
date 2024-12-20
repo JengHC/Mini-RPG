@@ -12462,6 +12462,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1187748150}
     m_Modifications:
+    - target: {fileID: 2908619405672549858, guid: 206e33771c8d5dd4b93a2c604a4134ba, type: 3}
+      propertyPath: m_Size.x
+      value: 14.48
+      objectReference: {fileID: 0}
+    - target: {fileID: 2908619405672549858, guid: 206e33771c8d5dd4b93a2c604a4134ba, type: 3}
+      propertyPath: m_Size.y
+      value: 1.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2908619405672549858, guid: 206e33771c8d5dd4b93a2c604a4134ba, type: 3}
+      propertyPath: m_Size.z
+      value: 1.36
+      objectReference: {fileID: 0}
     - target: {fileID: 3960845748761224396, guid: 206e33771c8d5dd4b93a2c604a4134ba, type: 3}
       propertyPath: m_LocalPosition.x
       value: 4.756861
@@ -12522,6 +12534,10 @@ PrefabInstance:
       propertyPath: hpBar
       value: 
       objectReference: {fileID: 5245279990184437257}
+    - target: {fileID: 8773095524724338965, guid: 206e33771c8d5dd4b93a2c604a4134ba, type: 3}
+      propertyPath: maxHP
+      value: 500
+      objectReference: {fileID: 0}
     - target: {fileID: 8773095524724338965, guid: 206e33771c8d5dd4b93a2c604a4134ba, type: 3}
       propertyPath: popupManager
       value: 
